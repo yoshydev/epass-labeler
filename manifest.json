@@ -39,5 +39,11 @@
   "icons": {
     "48": "icons/icon48.png",
     "128": "icons/icon128.png"
+  },
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "24353896+yoshydev@users.noreply.github.com",
+      "strict_min_version": "109.0"
+    }
   }
 }
