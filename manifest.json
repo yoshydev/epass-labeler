@@ -1,0 +1,43 @@
+{
+  "manifest_version": 3,
+  "name": "e-amusement Pass Labeler",
+  "version": "1.0.0",
+  "description": "Add editable labels to e-amusement pass IDs on Konami websites.",
+  "permissions": [
+    "storage"
+  ],
+  "host_permissions": [
+    "https://p.eagate.573.jp/*"
+  ],
+  "content_scripts": [
+    {
+      "matches": [
+        "https://p.eagate.573.jp/gate/eapass/menu.html*",
+        "https://p.eagate.573.jp/game/infinitas/2/api/login/login.html*"
+      ],
+      "js": [
+        "src/loader.js"
+      ],
+      "css": [
+        "styles/style.css"
+      ],
+      "run_at": "document_end"
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": [
+        "src/*.js",
+        "src/handlers/*.js",
+        "src/handlers/infinitas/*.js"
+      ],
+      "matches": [
+        "https://p.eagate.573.jp/*"
+      ]
+    }
+  ],
+  "icons": {
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  }
+}

@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Mock Login Page</title>
+    <link rel="stylesheet" href="../styles/style.css">
+    <style>
+        body {
+            font-family: sans-serif;
+            padding: 20px;
+        }
+
+        .epass {
+            background: #f0f0f0;
+            padding: 15px;
+            border: 1px solid #ccc;
+            max-width: 300px;
+        }
+
+        .epass p {
+            margin: 5px 0;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Infinitas Login MOCK</h1>
+
+    <div class="epass">
+        <p>参照中のe-amusement pass(カードナンバー)</p>
+        <p>H05PGZ0TCEW6EF23</p>
+    </div>
+
+    <!-- Verification Setup -->
+    <script type="module">
+        import { LoginPageHandler } from '../src/handlers/infinitas/login.js';
+
+        // Mock Chrome API
+        window.chrome = {
+            storage: {
+                local: {
+                    _data: {
+                        'H05PGZ0TCEW6EF23': 'Existing Verification Label'
+                    },
+                    get: (keys, cb) => {
+                        console.log('Mock Storage GET:', keys);
+                        const ret = {};
+                        keys.forEach(k => ret[k] = window.chrome.storage.local._data[k]);
+                        cb(ret);
+                    },
+                    set: (items, cb) => {
+                        console.log('Mock Storage SET:', items);
+                        Object.assign(window.chrome.storage.local._data, items);
+                        if (cb) cb();
+                    }
+                }
+            }
+        };
+
+        // Initialize Handler
+        const handler = new LoginPageHandler();
+        await handler.run();
+    </script>
+</body>
+
+</html>

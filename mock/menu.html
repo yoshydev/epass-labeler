@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>Mock Menu Page</title>
+    <link rel="stylesheet" href="../styles/style.css">
+    <style>
+        body { font-family: sans-serif; padding: 20px; }
+        .cl_view_switcher_variable { background: #eee; padding: 10px; margin-bottom: 20px; }
+        .cl_eapasslist_pulldown { padding: 5px; }
+    </style>
+</head>
+<body>
+    <h1>e-amusement Pass System MOCK</h1>
+    
+    <div class="cl_view_switcher_variable">
+        H05PGZ0TCEW6EF23
+    </div>
+
+    <form>
+        <select name="eapasslist" class="cl_eapasslist_pulldown">
+            <option value="0">0JN72YCH34Y0NP2R</option>
+            <option value="1" selected="">H05PGZ0TCEW6EF23</option>
+            <option value="2">N6BGP0ZLDBJEWX2H</option>
+        </select>
+    </form>
+
+    <!-- Verification Setup -->
+    <script type="module">
+        import { MenuPageHandler } from '../src/handlers/menu.js';
+        
+        // Mock Chrome API
+        window.chrome = {
+            storage: {
+                local: {
+                    _data: {},
+                    get: (keys, cb) => {
+                        console.log('Mock Storage GET:', keys);
+                        if (keys === null) return cb(window.chrome.storage.local._data);
+                        if (Array.isArray(keys)) {
+                            const res = {};
+                            keys.forEach(k => res[k] = window.chrome.storage.local._data[k]);
+                            return cb(res);
+                        }
+                        const res = {};
+                        Object.keys(keys).forEach(k => res[k] = window.chrome.storage.local._data[k] || keys[k]); // default values not really supported by get([key]) but for shim
+                        // Actually get([key]) returns {key: val}
+                        // If passing object {key: default}, returns {key: val|default}
+                        
+                        // Simplify for our usage: get([id])
+                        const ret = {};
+                        keys.forEach(k => ret[k] = window.chrome.storage.local._data[k]);
+                        cb(ret);
+                    },
+                    set: (items, cb) => {
+                        console.log('Mock Storage SET:', items);
+                        Object.assign(window.chrome.storage.local._data, items);
+                        if(cb) cb();
+                    }
+                }
+            }
+        };
+
+        // Initialize Handler
+        const handler = new MenuPageHandler();
+        // Force match or just run
+        if (handler.match('https://p.eagate.573.jp/gate/eapass/menu.html')) {
+             await handler.run();
+        } else {
+            console.error('Handler match failed checking mock URL');
+            // Manually run for test if url doesn't match
+            await handler.run();
+        }
+    </script>
+</body>
+</html>
